@@ -386,14 +386,20 @@ function SchemaItem(props: SchemaItemProps) {
         schema={schema}
         open={advancedModal}
         onOk={(newSchema) => {
+          if (newSchema.type === 'array' && !newSchema.items) {
+            newSchema.items = getDefaultSchema('string');
+          }
+
           if (!changeSchema) {
             return;
           }
+
           if (isRoot || schema.type === 'object') {
             changeSchema(namePath, { ...newSchema });
             setAdvancedModal(false);
             return;
           }
+
           changeSchema(namePath, { ...newSchema }, propertyName);
           setAdvancedModal(false);
         }}
