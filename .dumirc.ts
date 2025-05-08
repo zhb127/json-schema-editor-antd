@@ -10,7 +10,7 @@ export default defineConfig({
   themeConfig: {
     name: 'Flode',
     socialLinks: {
-      github: 'https://github.com/lin-mt/json-schema-editor-antd',
+      github: 'https://github.com/zhb127/json-schema-editor-antd',
     },
   },
 });

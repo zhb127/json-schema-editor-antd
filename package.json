@@ -1,6 +1,6 @@
 {
   "name": "@zhb127/json-schema-editor-antd",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "Json Schema Editor",
   "keywords": [
@@ -9,10 +9,10 @@
     "json schema",
     "json schema editor"
   ],
-  "homepage": "https://lin-mt.github.io/json-schema-editor-antd",
+  "homepage": "https://github.com/zhb127/json-schema-editor-antd",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lin-mt/json-schema-editor-antd.git"
+    "url": "https://github.com/zhb127/json-schema-editor-antd.git"
   },
   "license": "MIT",
   "module": "dist/index.js",

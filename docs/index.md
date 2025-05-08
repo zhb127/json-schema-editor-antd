@@ -6,7 +6,7 @@ hero:
     - text: Getting Started
       link: /components/json-schema-editor
     - text: Github
-      link: https://github.com/lin-mt/json-schema-editor-antd
+      link: https://github.com/zhb127/json-schema-editor-antd
 features:
   - title: 颜值
     emoji: 💎
