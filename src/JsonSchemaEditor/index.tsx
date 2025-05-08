@@ -248,6 +248,7 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
       <div style={{ paddingTop: '10px 10px 0 10px' }}>
         {contextHolder}
         <SchemaItem
+          disabled={props.disabled}
           schema={schema}
           changeSchema={changeSchema}
           renameProperty={renameProperty}

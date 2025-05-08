@@ -31,6 +31,7 @@ import AdvancedSettingModal from './AdvancedSettingModal';
 import ImportModal from './ImportModal';
 
 type SchemaItemProps = {
+  disabled?: boolean;
   propertyName?: string;
   nodeDepth?: number;
   namePath?: number[];
@@ -70,10 +71,6 @@ function SchemaItem(props: SchemaItemProps) {
 
   const [schema, setSchema] = useState(props.schema);
   const [propertyName, setPropertyName] = useState(props.propertyName);
-  const [schemaTitle, setSchemaTitle] = useState(schema.title);
-  const [schemaDescription, setSchemaDescription] = useState(
-    schema.description,
-  );
   const [nodeDepth, setNodeDepth] = useState(
     props.nodeDepth ? props.nodeDepth : 0,
   );
@@ -84,6 +81,7 @@ function SchemaItem(props: SchemaItemProps) {
   const [advancedModal, setAdvancedModal] = useState(false);
   const [importModal, setImportModal] = useState(false);
   const isRoot = typeof propertyName === 'undefined';
+  const disabled = props.disabled;
 
   useEffect(() => {
     setSchema(props.schema);
@@ -156,7 +154,7 @@ function SchemaItem(props: SchemaItemProps) {
                 status={
                   !isRoot && propertyName.length === 0 ? 'error' : undefined
                 }
-                disabled={isRoot || isArrayItems}
+                disabled={disabled || isRoot || isArrayItems}
                 value={isRoot ? 'root' : propertyName}
                 placeholder={t('PropertyPlaceholder')}
                 onBlur={() => {
@@ -179,7 +177,7 @@ function SchemaItem(props: SchemaItemProps) {
         </Col>
         <Col flex={'16px'}>
           <Checkbox
-            disabled={isArrayItems || isRoot}
+            disabled={disabled || isArrayItems || isRoot}
             checked={isRequire}
             onChange={(e) => {
               if (updateRequiredProperty && propertyName) {
@@ -190,6 +188,7 @@ function SchemaItem(props: SchemaItemProps) {
         </Col>
         <Col flex={'95px'}>
           <Select
+            disabled={disabled}
             style={{ width: '95px' }}
             value={schema.type}
             options={SchemaTypeOptions}
@@ -202,42 +201,41 @@ function SchemaItem(props: SchemaItemProps) {
         </Col>
         <Col span={5}>
           <Input
+            disabled={disabled}
             placeholder={t('TitlePlaceholder')}
-            value={schemaTitle}
-            onBlur={() => {
+            value={schema.title}
+            onChange={(e) => {
               if (changeSchema) {
                 changeSchema(
                   namePath.concat(getPropertyIndex(schema, 'title')),
-                  schemaTitle,
+                  e.target.value,
                   'title',
                 );
               }
             }}
-            onChange={(title) => setSchemaTitle(title.target.value)}
           />
         </Col>
         <Col span={5}>
           <Input
+            disabled={disabled}
             placeholder={t('DescriptionPlaceholder')}
-            value={schemaDescription}
-            onBlur={() => {
+            value={schema.description}
+            onChange={(e) => {
               if (changeSchema) {
                 changeSchema(
                   namePath.concat(getPropertyIndex(schema, 'description')),
-                  schemaDescription,
+                  e.target.value,
                   'description',
                 );
               }
             }}
-            onChange={(description) =>
-              setSchemaDescription(description.target.value)
-            }
           />
         </Col>
         <Col flex={'72px'}>
           <Row style={{ width: '72px' }}>
             <Tooltip title={t('AdvancedSettings')}>
               <Button
+                disabled={disabled}
                 type={'text'}
                 size={'small'}
                 icon={<SettingOutlined />}
@@ -261,7 +259,7 @@ function SchemaItem(props: SchemaItemProps) {
             </Tooltip>
             {(!isRoot && !isArrayItems) || schema.type === 'object' ? (
               <Dropdown
-                disabled={!addChildItems}
+                disabled={disabled || !addChildItems}
                 placement="bottom"
                 menu={{
                   items: [
@@ -288,6 +286,7 @@ function SchemaItem(props: SchemaItemProps) {
               >
                 <Tooltip title={!addChildItems && t('AddNode')}>
                   <Button
+                    disabled={disabled}
                     type={'text'}
                     size={'small'}
                     icon={<PlusOutlined />}
@@ -310,6 +309,7 @@ function SchemaItem(props: SchemaItemProps) {
               {isRoot ? (
                 <Tooltip title={t('ImportJson')}>
                   <Button
+                    disabled={disabled}
                     type={'text'}
                     size={'small'}
                     icon={<ImportOutlined />}
@@ -320,6 +320,7 @@ function SchemaItem(props: SchemaItemProps) {
               ) : !isArrayItems ? (
                 <Tooltip title={t('DeleteNode')}>
                   <Button
+                    disabled={disabled}
                     danger
                     type={'text'}
                     size={'small'}
