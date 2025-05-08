@@ -8,8 +8,8 @@
     "baseUrl": "./",
     "paths": {
       "@@/*": [".dumi/tmp/*"],
-      "@flodejs/json-schema-editor-antd": ["src"],
-      "@flodejs/json-schema-editor-antd/*": ["src/*", "*"]
+      "@zhb127/json-schema-editor-antd": ["src"],
+      "@zhb127/json-schema-editor-antd/*": ["src/*", "*"]
     }
   },
   "include": [".dumirc.ts", "src/**/*"]

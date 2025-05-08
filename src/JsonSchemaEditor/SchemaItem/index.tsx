@@ -6,29 +6,29 @@ import {
   PlusOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import AdvancedSettingModal from '@flodejs/json-schema-editor-antd/JsonSchemaEditor/SchemaItem/AdvancedSettingModal';
-import ImportModal from '@flodejs/json-schema-editor-antd/JsonSchemaEditor/SchemaItem/ImportModal';
 import {
   Button,
   Checkbox,
   Col,
   Dropdown,
   Input,
-  message,
   Row,
   Select,
-  theme,
   Tooltip,
+  message,
+  theme,
 } from 'antd';
 import _ from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useI18n } from '../i18n';
 import { JSONSchema7 } from '../types';
 import {
+  SchemaTypeOptions,
   getDefaultSchema,
   getPropertyIndex,
-  SchemaTypeOptions,
 } from '../utils';
+import AdvancedSettingModal from './AdvancedSettingModal';
+import ImportModal from './ImportModal';
 
 type SchemaItemProps = {
   propertyName?: string;

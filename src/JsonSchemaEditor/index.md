@@ -5,11 +5,11 @@
   `0.x.x` 版本。
 
 ```shell
-yarn add @flodejs/json-schema-editor-antd
+yarn add @zhb127/json-schema-editor-antd
 ```
 
 ```jsx
-import { JsonSchemaEditor } from '@flodejs/json-schema-editor-antd';
+import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
 
 export default () => <JsonSchemaEditor />;
 ```
