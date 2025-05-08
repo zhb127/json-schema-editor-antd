@@ -134,45 +134,50 @@ function SchemaItem(props: SchemaItemProps) {
   return (
     <>
       {contextHolder}
-      <Row align={'middle'} style={{ paddingBottom: 10 }}>
-        <Col
-          flex={`${24 + nodeDepth * 17}px`}
-          style={{ marginLeft: nodeDepth * 5 }}
-        >
-          <Row justify={'end'}>
-            {schema.type === 'object' && (
-              <Button
-                type={'text'}
-                size={'small'}
-                icon={expand ? <CaretDownOutlined /> : <CaretRightOutlined />}
-                onClick={() => setExpand(!expand)}
+      <Row align={'middle'} style={{ paddingBottom: 10 }} gutter={10}>
+        <Col flex={'auto'}>
+          <Row align={'middle'} wrap={false}>
+            <Col flex={`${24 + nodeDepth * 20}px`}>
+              <Row justify={'end'}>
+                {schema.type === 'object' && (
+                  <Button
+                    type={'text'}
+                    size={'small'}
+                    icon={
+                      expand ? <CaretDownOutlined /> : <CaretRightOutlined />
+                    }
+                    onClick={() => setExpand(!expand)}
+                  />
+                )}
+              </Row>
+            </Col>
+            <Col flex={'auto'}>
+              <Input
+                status={
+                  !isRoot && propertyName.length === 0 ? 'error' : undefined
+                }
+                disabled={isRoot || isArrayItems}
+                value={isRoot ? 'root' : propertyName}
+                placeholder={t('PropertyPlaceholder')}
+                onBlur={() => {
+                  if (propertyName?.length === 0) {
+                    messageApi.warning(t('PropertyNameEmptyWarnMsg')).then();
+                    return;
+                  }
+                  if (
+                    renameProperty &&
+                    propertyName &&
+                    propertyName?.length !== 0
+                  ) {
+                    renameProperty(namePath, propertyName);
+                  }
+                }}
+                onChange={(name) => setPropertyName(name.target.value)}
               />
-            )}
+            </Col>
           </Row>
         </Col>
-        <Col flex={'auto'} style={{ marginLeft: 5 }}>
-          <Input
-            status={!isRoot && propertyName.length === 0 ? 'error' : undefined}
-            disabled={isRoot || isArrayItems}
-            value={isRoot ? 'root' : propertyName}
-            placeholder={t('PropertyPlaceholder')}
-            onBlur={() => {
-              if (propertyName?.length === 0) {
-                messageApi.warning(t('PropertyNameEmptyWarnMsg')).then();
-                return;
-              }
-              if (
-                renameProperty &&
-                propertyName &&
-                propertyName?.length !== 0
-              ) {
-                renameProperty(namePath, propertyName);
-              }
-            }}
-            onChange={(name) => setPropertyName(name.target.value)}
-          />
-        </Col>
-        <Col flex={'16px'} style={{ marginLeft: 5 }}>
+        <Col flex={'16px'}>
           <Checkbox
             disabled={isArrayItems || isRoot}
             checked={isRequire}
@@ -183,7 +188,7 @@ function SchemaItem(props: SchemaItemProps) {
             }}
           />
         </Col>
-        <Col flex={'95px'} style={{ marginLeft: 5 }}>
+        <Col flex={'95px'}>
           <Select
             style={{ width: '95px' }}
             value={schema.type}
@@ -195,7 +200,7 @@ function SchemaItem(props: SchemaItemProps) {
             }}
           />
         </Col>
-        <Col flex={'auto'} style={{ marginLeft: 5 }}>
+        <Col span={5}>
           <Input
             placeholder={t('TitlePlaceholder')}
             value={schemaTitle}
@@ -211,7 +216,7 @@ function SchemaItem(props: SchemaItemProps) {
             onChange={(title) => setSchemaTitle(title.target.value)}
           />
         </Col>
-        <Col flex={'auto'} style={{ marginLeft: 5 }}>
+        <Col span={5}>
           <Input
             placeholder={t('DescriptionPlaceholder')}
             value={schemaDescription}
@@ -229,7 +234,7 @@ function SchemaItem(props: SchemaItemProps) {
             }
           />
         </Col>
-        <Col flex={'72px'} style={{ marginLeft: 5 }}>
+        <Col flex={'72px'}>
           <Row style={{ width: '72px' }}>
             <Tooltip title={t('AdvancedSettings')}>
               <Button
