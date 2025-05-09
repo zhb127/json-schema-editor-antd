@@ -11,7 +11,7 @@ yarn add @zhb127/json-schema-editor-antd
 ```jsx
 import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
 
-export default () => <JsonSchemaEditor />;
+export default () => <JsonSchemaEditor rootSchemaImmutable={true} />;
 ```
 
 ## Notice

@@ -31,7 +31,6 @@ import AdvancedSettingModal from './AdvancedSettingModal';
 import ImportModal from './ImportModal';
 
 type SchemaItemProps = {
-  disabled?: boolean;
   propertyName?: string;
   nodeDepth?: number;
   namePath?: number[];
@@ -52,6 +51,9 @@ type SchemaItemProps = {
     schema: JSONSchema7,
     propertyName?: string,
   ) => boolean;
+
+  disabled?: boolean;
+  immutable?: boolean;
 };
 
 function SchemaItem(props: SchemaItemProps) {
@@ -82,6 +84,7 @@ function SchemaItem(props: SchemaItemProps) {
   const [importModal, setImportModal] = useState(false);
   const isRoot = typeof propertyName === 'undefined';
   const disabled = props.disabled;
+  const immutable = props.immutable;
 
   useEffect(() => {
     setSchema(props.schema);
@@ -145,6 +148,7 @@ function SchemaItem(props: SchemaItemProps) {
                       expand ? <CaretDownOutlined /> : <CaretRightOutlined />
                     }
                     onClick={() => setExpand(!expand)}
+                    disabled={disabled || immutable}
                   />
                 )}
               </Row>
@@ -154,7 +158,7 @@ function SchemaItem(props: SchemaItemProps) {
                 status={
                   !isRoot && propertyName.length === 0 ? 'error' : undefined
                 }
-                disabled={disabled || isRoot || isArrayItems}
+                disabled={disabled || isRoot || isArrayItems || immutable}
                 value={isRoot ? 'root' : propertyName}
                 placeholder={t('PropertyPlaceholder')}
                 onBlur={() => {
@@ -177,7 +181,7 @@ function SchemaItem(props: SchemaItemProps) {
         </Col>
         <Col flex={'16px'}>
           <Checkbox
-            disabled={disabled || isArrayItems || isRoot}
+            disabled={disabled || isArrayItems || isRoot || immutable}
             checked={isRequire}
             onChange={(e) => {
               if (updateRequiredProperty && propertyName) {
@@ -188,7 +192,7 @@ function SchemaItem(props: SchemaItemProps) {
         </Col>
         <Col flex={'95px'}>
           <Select
-            disabled={disabled}
+            disabled={disabled || immutable}
             style={{ width: '95px' }}
             value={schema.type}
             options={SchemaTypeOptions}
@@ -201,7 +205,7 @@ function SchemaItem(props: SchemaItemProps) {
         </Col>
         <Col span={5}>
           <Input
-            disabled={disabled}
+            disabled={disabled || immutable}
             placeholder={t('TitlePlaceholder')}
             value={schema.title}
             onChange={(e) => {
@@ -217,7 +221,7 @@ function SchemaItem(props: SchemaItemProps) {
         </Col>
         <Col span={6}>
           <Input
-            disabled={disabled}
+            disabled={disabled || immutable}
             placeholder={t('DescriptionPlaceholder')}
             value={schema.description}
             onChange={(e) => {
@@ -233,30 +237,32 @@ function SchemaItem(props: SchemaItemProps) {
         </Col>
         <Col flex={'72px'}>
           <Row style={{ width: '72px' }}>
-            <Tooltip title={t('AdvancedSettings')}>
-              <Button
-                disabled={disabled}
-                type={'text'}
-                size={'small'}
-                icon={<SettingOutlined />}
-                style={{ color: 'green' }}
-                onClick={() => {
-                  if (
-                    handleAdvancedSettingClick &&
-                    !handleAdvancedSettingClick(
-                      namePath,
-                      schema,
-                      isRoot || schema.type === 'object'
-                        ? undefined
-                        : propertyName,
-                    )
-                  ) {
-                    return;
-                  }
-                  setAdvancedModal(!advancedModal);
-                }}
-              />
-            </Tooltip>
+            {!immutable && (
+              <Tooltip title={t('AdvancedSettings')}>
+                <Button
+                  disabled={disabled}
+                  type={'text'}
+                  size={'small'}
+                  icon={<SettingOutlined />}
+                  style={{ color: 'green' }}
+                  onClick={() => {
+                    if (
+                      handleAdvancedSettingClick &&
+                      !handleAdvancedSettingClick(
+                        namePath,
+                        schema,
+                        isRoot || schema.type === 'object'
+                          ? undefined
+                          : propertyName,
+                      )
+                    ) {
+                      return;
+                    }
+                    setAdvancedModal(!advancedModal);
+                  }}
+                />
+              </Tooltip>
+            )}
             {(!isRoot && !isArrayItems) || schema.type === 'object' ? (
               <Dropdown
                 disabled={disabled || !addChildItems}
@@ -306,7 +312,7 @@ function SchemaItem(props: SchemaItemProps) {
               <div style={{ width: '24px' }} />
             )}
             <Col flex={'24px'}>
-              {isRoot ? (
+              {isRoot && !immutable && (
                 <Tooltip title={t('ImportJson')}>
                   <Button
                     disabled={disabled}
@@ -317,7 +323,9 @@ function SchemaItem(props: SchemaItemProps) {
                     onClick={() => setImportModal(true)}
                   />
                 </Tooltip>
-              ) : !isArrayItems ? (
+              )}
+
+              {!isRoot && !isArrayItems && (
                 <Tooltip title={t('DeleteNode')}>
                   <Button
                     disabled={disabled}
@@ -332,8 +340,6 @@ function SchemaItem(props: SchemaItemProps) {
                     }}
                   />
                 </Tooltip>
-              ) : (
-                <div style={{ width: '24px' }} />
               )}
             </Col>
             {isRoot && schema.type !== 'object' && (
@@ -363,6 +369,7 @@ function SchemaItem(props: SchemaItemProps) {
                   propertyName={name}
                   schema={schema.properties[name] as JSONSchema7}
                   handleAdvancedSettingClick={handleAdvancedSettingClick}
+                  immutable={false}
                 />
               </div>
             );
@@ -379,6 +386,7 @@ function SchemaItem(props: SchemaItemProps) {
           namePath={namePath.concat(getPropertyIndex(schema, 'items'))}
           schema={schema.items as JSONSchema7}
           handleAdvancedSettingClick={handleAdvancedSettingClick}
+          immutable={false}
         />
       )}
 

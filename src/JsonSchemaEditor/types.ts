@@ -1,5 +1,4 @@
 export type SchemaEditorProps = {
-  disabled?: boolean;
   data?: JSONSchema7 | undefined | string;
   onSchemaChange?: (schema: JSONSchema7) => void;
   handleAdvancedSettingClick?: (
@@ -7,6 +6,9 @@ export type SchemaEditorProps = {
     schema: JSONSchema7,
     propertyName?: string,
   ) => boolean;
+
+  disabled?: boolean;
+  rootSchemaImmutable?: boolean;
 };
 
 //==================================================================================================
