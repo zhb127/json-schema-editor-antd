@@ -132,10 +132,10 @@ function SchemaItem(props: SchemaItemProps) {
   return (
     <>
       {contextHolder}
-      <Row align={'middle'} style={{ paddingBottom: 10 }} gutter={10}>
+      <Row align={'middle'} style={{ paddingBottom: 10 }} gutter={8}>
         <Col flex={'auto'}>
           <Row align={'middle'} wrap={false}>
-            <Col flex={`${24 + nodeDepth * 20}px`}>
+            <Col flex={`${24 + nodeDepth * 14}px`}>
               <Row justify={'end'}>
                 {schema.type === 'object' && (
                   <Button
@@ -215,7 +215,7 @@ function SchemaItem(props: SchemaItemProps) {
             }}
           />
         </Col>
-        <Col span={5}>
+        <Col span={6}>
           <Input
             disabled={disabled}
             placeholder={t('DescriptionPlaceholder')}
