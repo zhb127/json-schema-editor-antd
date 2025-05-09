@@ -9,6 +9,7 @@ export type SchemaEditorProps = {
 
   disabled?: boolean;
   rootSchemaImmutable?: boolean;
+  importSchemaValidate?: (schema: JSONSchema7) => boolean;
 };
 
 //==================================================================================================

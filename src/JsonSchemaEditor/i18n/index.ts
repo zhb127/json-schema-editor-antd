@@ -22,6 +22,8 @@ const defaultMessages: Record<Lang, LocaleMessages> = {
     ImportNotJsonWarnMsg: 'The imported content is not in JSON format',
     ImportErrorContentWarnMsg:
       'The imported content is incorrect, please check and try again',
+    ImportNonRootSchemaWarnMsg:
+      'The imported schema is not a root schema, please import the root schema',
     BasicSettings: 'Basic Settings',
     DefaultValue: 'Default Value',
     DefaultValuePlaceholder: 'Please input the default value',
@@ -66,6 +68,8 @@ const defaultMessages: Record<Lang, LocaleMessages> = {
     ImportEmptyJsonWarnMsg: '请输入导入的 Json 数据',
     ImportNotJsonWarnMsg: '导入的内容不是 Json 格式的数据',
     ImportErrorContentWarnMsg: '导入的内容有误，请检查后重新导入',
+    ImportNonRootSchemaWarnMsg:
+      '导入的不是一个 Root Schema（即：最上层必须要有 type），请检查后重新导入',
     BasicSettings: '基本设置',
     DefaultValue: '默认值',
     DefaultValuePlaceholder: '请输入默认值',

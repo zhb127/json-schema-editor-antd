@@ -54,6 +54,7 @@ type SchemaItemProps = {
 
   disabled?: boolean;
   immutable?: boolean;
+  importSchemaValidate?: (schema: JSONSchema7) => boolean;
 };
 
 function SchemaItem(props: SchemaItemProps) {
@@ -312,7 +313,7 @@ function SchemaItem(props: SchemaItemProps) {
               <div style={{ width: '24px' }} />
             )}
             <Col flex={'24px'}>
-              {isRoot && !immutable && (
+              {isRoot && (
                 <Tooltip title={t('ImportJson')}>
                   <Button
                     disabled={disabled}
@@ -370,6 +371,7 @@ function SchemaItem(props: SchemaItemProps) {
                   schema={schema.properties[name] as JSONSchema7}
                   handleAdvancedSettingClick={handleAdvancedSettingClick}
                   immutable={false}
+                  importSchemaValidate={undefined}
                 />
               </div>
             );
@@ -387,6 +389,7 @@ function SchemaItem(props: SchemaItemProps) {
           schema={schema.items as JSONSchema7}
           handleAdvancedSettingClick={handleAdvancedSettingClick}
           immutable={false}
+          importSchemaValidate={undefined}
         />
       )}
 
@@ -417,6 +420,12 @@ function SchemaItem(props: SchemaItemProps) {
       <ImportModal
         open={importModal}
         onOk={(newSchema) => {
+          if (props.importSchemaValidate) {
+            const isValid = props.importSchemaValidate(newSchema);
+            if (!isValid) {
+              return;
+            }
+          }
           if (changeSchema) {
             changeSchema([], newSchema);
             setImportModal(false);

@@ -8,10 +8,37 @@
 yarn add @zhb127/json-schema-editor-antd
 ```
 
+正常使用：
+
 ```jsx
 import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
 
-export default () => <JsonSchemaEditor rootSchemaImmutable={true} />;
+export default () => <JsonSchemaEditor />;
+```
+
+root schema 不可改变：
+
+```jsx
+import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
+
+export default () => <JsonSchemaEditor rootSchemaImmutable />;
+```
+
+针对导入的 schema 进行校验：
+
+```jsx
+import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
+
+export default () => (
+  <JsonSchemaEditor
+    importSchemaValidate={(schema) => {
+      if (schema.type !== 'object') {
+        alert('root schema 必须是 object 类型');
+        return false;
+      }
+    }}
+  />
+);
 ```
 
 ## Notice

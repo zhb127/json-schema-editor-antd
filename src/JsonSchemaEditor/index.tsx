@@ -257,6 +257,7 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
           handleAdvancedSettingClick={props.handleAdvancedSettingClick}
           disabled={props.disabled}
           immutable={props.rootSchemaImmutable}
+          importSchemaValidate={props.importSchemaValidate}
         />
       </div>
     );

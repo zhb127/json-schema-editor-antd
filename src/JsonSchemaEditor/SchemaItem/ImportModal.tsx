@@ -1,5 +1,5 @@
 import Ajv from 'ajv';
-import { message, Modal, Radio, Row } from 'antd';
+import { message, Modal, Radio, Row, Typography } from 'antd';
 import { compileSchema, draft2020 } from 'json-schema-library';
 import React, { useEffect, useRef, useState } from 'react';
 import { useI18n } from '../i18n';
@@ -65,34 +65,47 @@ const ImportModal = (props: ImportModalProps) => {
               schema = await resolveJsonSchemaRef(importObject);
               break;
           }
+
           if (!schema) {
             messageApi.warning(t('ImportErrorContentWarnMsg'));
             return;
-          } else {
-            const ajv = new Ajv({ allErrors: true });
-            const validateSchema = ajv.getSchema(
-              'http://json-schema.org/draft-07/schema#',
-            );
-            if (validateSchema && !validateSchema(schema)) {
-              const errorContent = validateSchema.errors?.map(
-                (error, index) => {
-                  const field = error.instancePath.split('/').pop() || 'root';
-                  const message = `${field} ${error.message}`;
-                  return (
-                    <div key={index}>
-                      {`Error in field "${field}": ${message}`}
-                    </div>
-                  );
-                },
-              );
-              if ((errorContent?.length || 0) > 0) {
-                messageApi.error({
-                  content: <div>{errorContent}</div>,
-                });
-              }
-              return;
-            }
           }
+
+          if (schema.type === undefined) {
+            messageApi.error(t('ImportNonRootSchemaWarnMsg'));
+            return;
+          }
+
+          if (schema.type === 'object' && schema.properties === undefined) {
+            schema.properties = {};
+          } else if (schema.type === 'array' && schema.items === undefined) {
+            schema.items = {
+              type: 'string',
+            };
+          }
+
+          const ajv = new Ajv({ strictSchema: true, allErrors: true });
+          if (!ajv.validateSchema(schema)) {
+            const errorContent = ajv.errors?.map((val, idx) => {
+              let errMsg = `${val.message}`;
+              if (val.params) {
+                errMsg += `; ${JSON.stringify(val.params)}`;
+              }
+              return (
+                <Row key={idx} justify={'start'}>
+                  <Typography.Text code>{val.instancePath}</Typography.Text>
+                  {errMsg}
+                </Row>
+              );
+            });
+            if ((errorContent?.length || 0) > 0) {
+              messageApi.error({
+                content: <div>{errorContent}</div>,
+              });
+            }
+            return;
+          }
+
           if (onOk) {
             onOk(schema);
           }
