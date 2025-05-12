@@ -54,7 +54,9 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
     const [schema, setSchema, getSchema] = useGetState<JSONSchema>(
       initSchema(props.value),
     );
-    const [fieldCount, setFieldCount] = useState(0);
+    const [fieldCount, setFieldCount] = useState(
+      Object.keys(schema.properties || {}).length,
+    );
 
     const changeSchema = (
       namePath: number[],

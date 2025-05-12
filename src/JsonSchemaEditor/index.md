@@ -23,7 +23,7 @@ import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
 
 export default () => (
   <JsonSchemaEditor
-    data={{
+    value={{
       type: 'object',
       properties: {
         field_0: {
