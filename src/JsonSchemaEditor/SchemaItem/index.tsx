@@ -54,7 +54,7 @@ type SchemaItemProps = {
 
   disabled?: boolean;
   immutable?: boolean;
-  importSchemaValidate?: (schema: JSONSchema7) => boolean;
+  importSchemaValidate?: (schema: JSONSchema) => boolean;
 };
 
 function SchemaItem(props: SchemaItemProps) {
