@@ -88,7 +88,7 @@ loader.config({ monaco });
 
 JsonSchema 变更的回调。
 
-类型：`(schema: JSONSchema7) => void`
+类型：`(schema: JSONSchema) => void`
 
 默认值： `-`
 
@@ -96,7 +96,7 @@ JsonSchema 变更的回调。
 
 初始化组件数据。
 
-类型：`JSONSchema7 | string | undefined`
+类型：`JSONSchema | string | undefined`
 
 默认值：
 
@@ -115,11 +115,23 @@ JsonSchema 变更的回调。
 
 点击`高级设置`按钮的回调，返回`false`：不使用默认表单，返回`true`：使用默认表单。
 
-类型：`(namePath: number[], schema: JSONSchema7, propertyName?: string) => boolean`
+类型：`(namePath: number[], schema: JSONSchema, propertyName?: string) => boolean`
 
 默认值：`-`
 
 说明：可以结合`组件引用`实现点击高级设置按钮后获取路径下的 JsonSchema，添加、修改自定义字段等，然后修改指定路径下的 JsonSchema。
+
+### 国际化
+
+支持 antd 的 ConfigureProvider。
+
+```ts
+// 支持扩展或覆盖默认语言配置
+registerLocale('zh-cn', {
+  PropertyPlaceholder: '请输入属性名称',
+  // ...
+});
+```
 
 ## 组件引用（ref）
 

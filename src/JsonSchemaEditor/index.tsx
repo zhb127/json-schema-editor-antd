@@ -1,9 +1,9 @@
 import { useGetState } from 'ahooks';
-import { message } from 'antd';
+import { Empty, message } from 'antd';
 import _ from 'lodash';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import SchemaItem from './SchemaItem';
-import { JSONSchema7, SchemaEditorProps } from './types';
+import { JSONSchema, SchemaEditorProps } from './types';
 import { getDefaultSchema, getValueByPath, inferSchema } from './utils';
 
 export interface JsonSchemaEditorHandle {
@@ -14,8 +14,8 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
   (props, ref) => {
     const [messageApi, contextHolder] = message.useMessage();
 
-    function initSchema(data: string | undefined | JSONSchema7): JSONSchema7 {
-      const defaultSchema: JSONSchema7 = {
+    function initSchema(data: string | undefined | JSONSchema): JSONSchema {
+      const defaultSchema: JSONSchema = {
         type: 'object',
         properties: {
           field: { type: 'string' },
@@ -39,7 +39,7 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
       }
     }
 
-    // const [schema, setSchema] = useState<JSONSchema7>({
+    // const [schema, setSchema] = useState<JSONSchema>({
     //   type: 'object', properties: {
     //     'objectP': {type: 'object', properties: {'o1numberP': {type: 'number'}}},
     //     'numberP': {type: 'number'},
@@ -51,8 +51,8 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
     //   }
     // })
 
-    const [schema, setSchema, getSchema] = useGetState<JSONSchema7>(
-      initSchema(props.data),
+    const [schema, setSchema, getSchema] = useGetState<JSONSchema>(
+      initSchema(props.value),
     );
     const [fieldCount, setFieldCount] = useState(0);
 
@@ -237,35 +237,39 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
     useImperativeHandle(ref, () => ({ changeSchema }));
 
     return (
-      <div style={{ paddingTop: '10px 10px 0 10px' }}>
+      <div style={{ ...props.style }}>
         {contextHolder}
-        <SchemaItem
-          schema={schema}
-          changeSchema={(namePath, value, propertyName) => {
-            changeSchema(namePath, value, propertyName);
-            props.onSchemaChange?.(getSchema());
-          }}
-          renameProperty={(namePath, name) => {
-            renameProperty(namePath, name);
-            props.onSchemaChange?.(getSchema());
-          }}
-          removeProperty={(namePath) => {
-            removeProperty(namePath);
-            props.onSchemaChange?.(getSchema());
-          }}
-          addProperty={(path, isChild) => {
-            addProperty(path, isChild);
-            props.onSchemaChange?.(getSchema());
-          }}
-          updateRequiredProperty={(namePath, removed) => {
-            updateRequiredProperty(namePath, removed);
-            props.onSchemaChange?.(getSchema());
-          }}
-          handleAdvancedSettingClick={props.handleAdvancedSettingClick}
-          disabled={props.disabled}
-          immutable={props.rootSchemaImmutable}
-          importSchemaValidate={props.importSchemaValidate}
-        />
+        {schema ? (
+          <SchemaItem
+            schema={schema}
+            changeSchema={(namePath, value, propertyName) => {
+              changeSchema(namePath, value, propertyName);
+              props.onSchemaChange?.(getSchema());
+            }}
+            renameProperty={(namePath, name) => {
+              renameProperty(namePath, name);
+              props.onSchemaChange?.(getSchema());
+            }}
+            removeProperty={(namePath) => {
+              removeProperty(namePath);
+              props.onSchemaChange?.(getSchema());
+            }}
+            addProperty={(path, isChild) => {
+              addProperty(path, isChild);
+              props.onSchemaChange?.(getSchema());
+            }}
+            updateRequiredProperty={(namePath, removed) => {
+              updateRequiredProperty(namePath, removed);
+              props.onSchemaChange?.(getSchema());
+            }}
+            handleAdvancedSettingClick={props.handleAdvancedSettingClick}
+            disabled={props.disabled}
+            immutable={props.rootSchemaImmutable}
+            importSchemaValidate={props.importSchemaValidate}
+          />
+        ) : (
+          <Empty />
+        )}
       </div>
     );
   },
