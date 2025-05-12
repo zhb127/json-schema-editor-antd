@@ -1,7 +1,12 @@
 import { useGetState } from 'ahooks';
 import { message } from 'antd';
 import _ from 'lodash';
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import SchemaItem from './SchemaItem';
 import { JSONSchema7, SchemaEditorProps } from './types';
 import { getDefaultSchema, getValueByPath, inferSchema } from './utils';
@@ -54,9 +59,11 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
     const [schema, setSchema, getSchema] = useGetState<JSONSchema7>(
       initSchema(props.data),
     );
-    const [fieldCount, setFieldCount] = useState(
-      Object.keys(schema.properties || {}).length,
-    );
+
+    const [fieldCount, setFieldCount] = useState(0);
+    useEffect(() => {
+      setFieldCount(Object.keys(schema.properties || {}).length);
+    }, [schema]);
 
     const changeSchema = (
       namePath: number[],
@@ -232,7 +239,6 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
       } else {
         current[`field_${fieldCount}`] = newSchema;
       }
-      setFieldCount(fieldCount + 1);
       setSchema(schemaClone);
     }
 
