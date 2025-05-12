@@ -125,7 +125,7 @@ JsonSchema 变更的回调。
 
 ```ts
 export interface JsonSchemaEditorHandle {
-  /* 更新指定路径下的 JsonSchema */
+  /* 更新指定路径下的 JsonSchema，不会触发 onSchemaChange 事件 */
   changeSchema: (namePath: number[], value: any, propertyName?: string) => void;
 }
 ```

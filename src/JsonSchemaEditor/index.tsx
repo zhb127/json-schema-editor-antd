@@ -1,4 +1,4 @@
-import { useUpdateEffect } from 'ahooks';
+import { useGetState } from 'ahooks';
 import { message } from 'antd';
 import _ from 'lodash';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
@@ -51,23 +51,19 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
     //   }
     // })
 
-    const [schema, setSchema] = useState<JSONSchema7>(initSchema(props.data));
+    const [schema, setSchema, getSchema] = useGetState<JSONSchema7>(
+      initSchema(props.data),
+    );
     const [fieldCount, setFieldCount] = useState(
       Object.keys(schema.properties || {}).length,
     );
-
-    useUpdateEffect(() => {
-      if (props.onSchemaChange) {
-        props.onSchemaChange(schema);
-      }
-    }, [schema]);
 
     const changeSchema = (
       namePath: number[],
       value: any,
       propertyName?: string,
     ) => {
-      console.log('changeSchema', namePath, value, propertyName);
+      //console.log('changeSchema', namePath, value, propertyName);
       if (namePath.length === 0) {
         setSchema(value);
         return;
@@ -247,11 +243,26 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
         {contextHolder}
         <SchemaItem
           schema={schema}
-          changeSchema={changeSchema}
-          renameProperty={renameProperty}
-          removeProperty={removeProperty}
-          addProperty={addProperty}
-          updateRequiredProperty={updateRequiredProperty}
+          changeSchema={(namePath, value, propertyName) => {
+            changeSchema(namePath, value, propertyName);
+            props.onSchemaChange?.(getSchema());
+          }}
+          renameProperty={(namePath, name) => {
+            renameProperty(namePath, name);
+            props.onSchemaChange?.(getSchema());
+          }}
+          removeProperty={(namePath) => {
+            removeProperty(namePath);
+            props.onSchemaChange?.(getSchema());
+          }}
+          addProperty={(path, isChild) => {
+            addProperty(path, isChild);
+            props.onSchemaChange?.(getSchema());
+          }}
+          updateRequiredProperty={(namePath, removed) => {
+            updateRequiredProperty(namePath, removed);
+            props.onSchemaChange?.(getSchema());
+          }}
           handleAdvancedSettingClick={props.handleAdvancedSettingClick}
           disabled={props.disabled}
           immutable={props.rootSchemaImmutable}
