@@ -8,13 +8,35 @@
 yarn add @zhb127/json-schema-editor-antd
 ```
 
-正常使用：
+初始化数据：
+
+```jsx
+import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
+
+export default () => <JsonSchemaEditor />;
+```
+
+覆盖初始化数据：
 
 ```jsx
 import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
 
 export default () => (
-  <JsonSchemaEditor onSchemaChange={(schema) => console.log(111, schema)} />
+  <JsonSchemaEditor
+    data={{
+      type: 'object',
+      properties: {
+        field_0: {
+          type: 'string',
+          title: '名称',
+        },
+        field_1: {
+          type: 'string',
+          title: 'abc',
+        },
+      },
+    }}
+  />
 );
 ```
 

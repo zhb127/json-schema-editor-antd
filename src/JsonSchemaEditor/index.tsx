@@ -52,7 +52,9 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
     // })
 
     const [schema, setSchema] = useState<JSONSchema7>(initSchema(props.data));
-    const [fieldCount, setFieldCount] = useState(0);
+    const [fieldCount, setFieldCount] = useState(
+      Object.keys(schema.properties || {}).length,
+    );
 
     useUpdateEffect(() => {
       if (props.onSchemaChange) {
@@ -65,7 +67,7 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
       value: any,
       propertyName?: string,
     ) => {
-      // console.log("changeSchema", namePath, value, propertyName);
+      console.log('changeSchema', namePath, value, propertyName);
       if (namePath.length === 0) {
         setSchema(value);
         return;
