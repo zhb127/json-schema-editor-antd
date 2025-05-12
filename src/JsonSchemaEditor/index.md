@@ -13,7 +13,9 @@ yarn add @zhb127/json-schema-editor-antd
 ```jsx
 import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
 
-export default () => <JsonSchemaEditor />;
+export default () => (
+  <JsonSchemaEditor onSchemaChange={(schema) => console.log(111, schema)} />
+);
 ```
 
 root schema 不可改变：

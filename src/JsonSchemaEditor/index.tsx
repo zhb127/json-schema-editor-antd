@@ -1,11 +1,7 @@
+import { useUpdateEffect } from 'ahooks';
 import { message } from 'antd';
 import _ from 'lodash';
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import SchemaItem from './SchemaItem';
 import { JSONSchema7, SchemaEditorProps } from './types';
 import { getDefaultSchema, getValueByPath, inferSchema } from './utils';
@@ -58,7 +54,7 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
     const [schema, setSchema] = useState<JSONSchema7>(initSchema(props.data));
     const [fieldCount, setFieldCount] = useState(0);
 
-    useEffect(() => {
+    useUpdateEffect(() => {
       if (props.onSchemaChange) {
         props.onSchemaChange(schema);
       }
