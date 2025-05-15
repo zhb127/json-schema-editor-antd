@@ -74,12 +74,8 @@ function SchemaItem(props: SchemaItemProps) {
 
   const [schema, setSchema] = useState(props.schema);
   const [propertyName, setPropertyName] = useState(props.propertyName);
-  const [nodeDepth, setNodeDepth] = useState(
-    props.nodeDepth ? props.nodeDepth : 0,
-  );
-  const [namePath, setNamePath] = useState<number[]>(
-    props.namePath ? props.namePath : [],
-  );
+  const [nodeDepth, setNodeDepth] = useState(props.nodeDepth ?? 0);
+  const [namePath, setNamePath] = useState<number[]>(props.namePath ?? []);
   const [expand, setExpand] = useState(true);
   const [advancedModal, setAdvancedModal] = useState(false);
   const [importModal, setImportModal] = useState(false);

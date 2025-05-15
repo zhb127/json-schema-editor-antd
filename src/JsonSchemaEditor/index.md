@@ -36,6 +36,9 @@ export default () => (
         },
       },
     }}
+    onSchemaChange={(schema) => {
+      console.log(schema);
+    }}
   />
 );
 ```

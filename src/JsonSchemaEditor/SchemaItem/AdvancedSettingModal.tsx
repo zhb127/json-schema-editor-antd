@@ -102,11 +102,13 @@ export default (props: AdvancedSettingModalProps) => {
       onOk={() => {
         advancedForm
           .validateFields()
-          .then((values) => onOk && onOk({ ...formSchema, ...values }))
+          .then((values) => {
+            onOk?.({ ...formSchema, ...values });
+            onClose();
+          })
           .catch((errorInfo) => {
             console.log('Failed:', errorInfo);
-          })
-          .finally(() => onClose());
+          });
       }}
       onCancel={onClose}
     >
