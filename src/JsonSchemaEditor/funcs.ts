@@ -6,7 +6,7 @@ export function initSchema(data: string | undefined | JSONSchema): JSONSchema {
   const defaultSchema: JSONSchema = {
     type: 'object',
     properties: {
-      field: { type: 'string' },
+      prop_demo: { type: 'string' },
     },
   };
 
@@ -30,26 +30,26 @@ export function initSchema(data: string | undefined | JSONSchema): JSONSchema {
 // 更新 JSON Schema
 export function updateSchema(
   schema: JSONSchema,
-  propPath: number[],
+  namePath: number[],
   value: any,
   keyword?: string, // 是针对 property 的哪个 keyword 进行更新
 ): JSONSchema | undefined {
   // 修改的是根节点
-  if (propPath.length === 0) {
+  if (namePath.length === 0) {
     return value;
   }
 
   let schemaClone = _.cloneDeep(schema);
   let current: any = schemaClone;
-  for (let i = 0; i < propPath.length - 1; i++) {
-    const key = Object.keys(current)[propPath[i]];
+  for (let i = 0; i < namePath.length - 1; i++) {
+    const key = Object.keys(current)[namePath[i]];
     if (!current[key]) {
       current[key] = {};
     }
     current = current[key];
   }
 
-  const lastKey = propPath[propPath.length - 1];
+  const lastKey = namePath[namePath.length - 1];
   const lastKeyActual = Object.keys(current)[lastKey];
   if (lastKey === -1) {
     if (typeof value === 'undefined' || !keyword) {
@@ -69,7 +69,7 @@ export function updateSchema(
 // 重命名属性
 export function renameProperty(
   schema: JSONSchema,
-  propPath: number[],
+  namePath: number[],
   newPropName: string | number,
 ): JSONSchema | undefined {
   let schemaClone = _.cloneDeep(schema);
@@ -77,16 +77,16 @@ export function renameProperty(
   let parent: any = null;
   let lastKey: string | number = '';
 
-  for (let i = 0; i < propPath.length - 1; i++) {
+  for (let i = 0; i < namePath.length - 1; i++) {
     const keys = Object.keys(current);
     let index: number;
-    if (typeof propPath[i] === 'number') {
-      index = propPath[i] as number;
+    if (typeof namePath[i] === 'number') {
+      index = namePath[i] as number;
     } else {
-      index = keys.indexOf(String(propPath[i]));
+      index = keys.indexOf(String(namePath[i]));
     }
     if (index < 0 || index >= keys.length) {
-      console.error(`Path not found: ${propPath.slice(0, i + 1).join('.')}`);
+      console.error(`Path not found: ${namePath.slice(0, i + 1).join('.')}`);
       return;
     }
     parent = current;
@@ -94,7 +94,7 @@ export function renameProperty(
     current = current[lastKey];
   }
 
-  const oldPropNameIndex = propPath[propPath.length - 1];
+  const oldPropNameIndex = namePath[namePath.length - 1];
   const propNames = Object.keys(current);
   const oldPropName = propNames[oldPropNameIndex];
   if (oldPropName === newPropName) {
@@ -126,21 +126,22 @@ export function renameProperty(
 }
 
 // 更新必选属性
-
-function updateRequired(target: any, property: string, remove: boolean) {
+function updateRequired(target: any, propName: string, remove: boolean) {
   if (!target.required) {
     target.required = [];
   }
-  const index = target.required.indexOf(property);
+
+  const index = target.required.indexOf(propName);
   if (remove) {
     if (index !== -1) {
       target.required.splice(index, 1);
     }
   } else {
     if (index === -1) {
-      target.required.push(property);
+      target.required.push(propName);
     }
   }
+
   if (target.required.length === 0) {
     delete target.required;
   }
@@ -149,18 +150,18 @@ function updateRequired(target: any, property: string, remove: boolean) {
 // 更新必选属性
 export function updateRequiredProperty(
   schema: JSONSchema,
-  propPath: number[],
+  namePath: number[],
   removed: boolean,
 ): JSONSchema | undefined {
-  if (propPath.length < 2) {
+  if (namePath.length < 2) {
     console.error('路径长度不足，无法更新必选属性');
     return;
   }
 
   let schemaClone = _.cloneDeep(schema);
 
-  const parentPath = propPath.slice(0, -2);
-  const propertyIndex = propPath[propPath.length - 1];
+  const parentPath = namePath.slice(0, -2);
+  const propertyIndex = namePath[namePath.length - 1];
 
   const parentObject = getValueByPath(schemaClone, parentPath);
   if (!parentObject || !parentObject.properties) {
@@ -175,38 +176,34 @@ export function updateRequiredProperty(
   }
 
   const propertyName = propertyNames[propertyIndex];
+
   updateRequired(parentObject, propertyName, removed);
 
   return schemaClone;
 }
 
 // 移除属性
-export function removeProperty(
-  schema: JSONSchema,
-  propPath: number[],
-): JSONSchema | undefined {
+export function removeProperty(schema: JSONSchema, namePath: number[]): JSONSchema | undefined {
   let schemaClone = _.cloneDeep(schema);
 
   let current: any = schemaClone;
   let pre: any = schemaClone;
 
-  for (let i = 0; i < propPath.length - 1; i++) {
+  for (let i = 0; i < namePath.length - 1; i++) {
     if (current !== undefined && current !== null) {
       pre = current;
-      current = current[Object.keys(current)[propPath[i]]];
+      current = current[Object.keys(current)[namePath[i]]];
     } else {
-      console.error('移除的 property 路径无效', propPath);
+      console.error('移除的 property 路径无效', namePath);
       return;
     }
   }
 
-  let finalPropName = Object.keys(current)[propPath[propPath.length - 1]];
+  let finalPropName = Object.keys(current)[namePath[namePath.length - 1]];
+
   updateRequired(pre, finalPropName, true);
-  if (
-    current &&
-    typeof current === 'object' &&
-    current.hasOwnProperty(finalPropName)
-  ) {
+
+  if (current && typeof current === 'object' && current.hasOwnProperty(finalPropName)) {
     delete current[finalPropName];
   }
 
@@ -214,34 +211,33 @@ export function removeProperty(
 }
 
 // 添加属性
-export function addProperty(
-  schema: JSONSchema,
-  propPath: number[],
-  isAddingChild: boolean,
-): JSONSchema {
+export function addProperty(schema: JSONSchema, namePath: number[], isAddingChild: boolean): JSONSchema {
   let schemaClone = _.cloneDeep(schema);
 
   let current: any = schemaClone;
-  for (let i = 0; i < propPath.length - (isAddingChild ? 0 : 1); i++) {
-    const key = Object.keys(current)[propPath[i]];
+  for (let i = 0; i < namePath.length - (isAddingChild ? 0 : 1); i++) {
+    const key = Object.keys(current)[namePath[i]];
     if (!current[key]) {
       current[key] = {};
     }
     current = current[key];
   }
 
-  const addedPropsCount = isAddingChild
-    ? Object.keys(current['properties']).length
-    : Object.keys(current).length;
-
-  const newPropKey = `field_${addedPropsCount + 1}`;
-  const newPropValue = getDefaultSchema('string');
-
   if (isAddingChild) {
-    current['properties'][newPropKey] = newPropValue;
-  } else {
-    current[newPropKey] = newPropValue;
+    current = current['properties'];
   }
+
+  const genNewPropName = (): string => {
+    return 'prop_' + Math.random().toString(36).slice(2, 6);
+  };
+
+  let newPropName = genNewPropName();
+  while (current.hasOwnProperty(newPropName)) {
+    newPropName = genNewPropName();
+    break;
+  }
+
+  current[newPropName] = getDefaultSchema('string');
 
   return schemaClone;
 }

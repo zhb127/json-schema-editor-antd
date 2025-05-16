@@ -6,27 +6,12 @@ import {
   PlusOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import {
-  Button,
-  Checkbox,
-  Col,
-  Dropdown,
-  Input,
-  Row,
-  Select,
-  Tooltip,
-  message,
-  theme,
-} from 'antd';
+import { Button, Checkbox, Col, Dropdown, Input, Row, Select, Tooltip, message, theme } from 'antd';
 import _ from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useI18n } from '../i18n';
 import { JSONSchema } from '../types';
-import {
-  SchemaTypeOptions,
-  getDefaultSchema,
-  getPropertyIndex,
-} from '../utils';
+import { SchemaTypeOptions, getDefaultSchema, getPropertyIndex } from '../utils';
 import AdvancedSettingModal from './AdvancedSettingModal';
 import ImportModal from './ImportModal';
 
@@ -37,20 +22,12 @@ type SchemaItemProps = {
   isArrayItems?: boolean;
   isRequire?: boolean;
   schema: JSONSchema;
-  changeSchema?: (
-    namePath: number[],
-    value: any,
-    propertyName?: string,
-  ) => void;
+  changeSchema?: (namePath: number[], value: any, keyword?: string) => void;
   renameProperty?: (namePath: number[], name: string) => void;
   removeProperty?: (namePath: number[]) => void;
-  addProperty?: (path: number[], isChild: boolean) => void;
+  addProperty?: (namePath: number[], isChild: boolean) => void;
   updateRequiredProperty?: (namePath: number[], removed: boolean) => void;
-  handleAdvancedSettingClick?: (
-    namePath: number[],
-    schema: JSONSchema,
-    propertyName?: string,
-  ) => boolean;
+  handleAdvancedSettingClick?: (namePath: number[], schema: JSONSchema, propertyName?: string) => boolean;
 
   disabled?: boolean;
   immutable?: boolean;
@@ -118,12 +95,7 @@ function SchemaItem(props: SchemaItemProps) {
 
   const schemaItems: any = schema.items;
   const addChildItems =
-    !!(
-      schema.type === 'object' ||
-      (isArrayItems && schemaItems?.type === 'object')
-    ) &&
-    !isArrayItems &&
-    !isRoot;
+    !!(schema.type === 'object' || (isArrayItems && schemaItems?.type === 'object')) && !isArrayItems && !isRoot;
 
   if (!schema.type) {
     return <></>;
@@ -141,9 +113,7 @@ function SchemaItem(props: SchemaItemProps) {
                   <Button
                     type={'text'}
                     size={'small'}
-                    icon={
-                      expand ? <CaretDownOutlined /> : <CaretRightOutlined />
-                    }
+                    icon={expand ? <CaretDownOutlined /> : <CaretRightOutlined />}
                     onClick={() => setExpand(!expand)}
                     disabled={disabled || immutable}
                   />
@@ -152,9 +122,7 @@ function SchemaItem(props: SchemaItemProps) {
             </Col>
             <Col flex={'auto'}>
               <Input
-                status={
-                  !isRoot && propertyName.length === 0 ? 'error' : undefined
-                }
+                status={!isRoot && propertyName.length === 0 ? 'error' : undefined}
                 disabled={disabled || isRoot || isArrayItems || immutable}
                 value={isRoot ? 'root' : propertyName}
                 placeholder={t('PropertyPlaceholder')}
@@ -163,11 +131,7 @@ function SchemaItem(props: SchemaItemProps) {
                     messageApi.warning(t('PropertyNameEmptyWarnMsg')).then();
                     return;
                   }
-                  if (
-                    renameProperty &&
-                    propertyName &&
-                    propertyName?.length !== 0
-                  ) {
+                  if (renameProperty && propertyName && propertyName?.length !== 0) {
                     renameProperty(namePath, propertyName);
                   }
                 }}
@@ -207,11 +171,7 @@ function SchemaItem(props: SchemaItemProps) {
             value={schema.title}
             onChange={(e) => {
               if (changeSchema) {
-                changeSchema(
-                  namePath.concat(getPropertyIndex(schema, 'title')),
-                  e.target.value,
-                  'title',
-                );
+                changeSchema(namePath.concat(getPropertyIndex(schema, 'title')), e.target.value, 'title');
               }
             }}
           />
@@ -223,11 +183,7 @@ function SchemaItem(props: SchemaItemProps) {
             value={schema.description}
             onChange={(e) => {
               if (changeSchema) {
-                changeSchema(
-                  namePath.concat(getPropertyIndex(schema, 'description')),
-                  e.target.value,
-                  'description',
-                );
+                changeSchema(namePath.concat(getPropertyIndex(schema, 'description')), e.target.value, 'description');
               }
             }}
           />
@@ -248,9 +204,7 @@ function SchemaItem(props: SchemaItemProps) {
                       !handleAdvancedSettingClick(
                         namePath,
                         schema,
-                        isRoot || schema.type === 'object'
-                          ? undefined
-                          : propertyName,
+                        isRoot || schema.type === 'object' ? undefined : propertyName,
                       )
                     ) {
                       return;
@@ -340,9 +294,7 @@ function SchemaItem(props: SchemaItemProps) {
               )}
             </Col>
             {isRoot && schema.type !== 'object' && (
-              <Col flex={'24px'}>
-                {!isArrayItems && <div style={{ width: '24px' }} />}
-              </Col>
+              <Col flex={'24px'}>{!isArrayItems && <div style={{ width: '24px' }} />}</Col>
             )}
           </Row>
         </Col>
