@@ -68,6 +68,51 @@ export default () => (
 );
 ```
 
+更新 schema：
+
+```jsx
+import { JsonSchemaEditor } from '@zhb127/json-schema-editor-antd';
+import { Button } from 'antd';
+import { useRef } from 'react';
+
+export default () => {
+  const ref = useRef();
+  return (
+    <>
+      <JsonSchemaEditor
+        ref={ref}
+        value={{
+          type: 'object',
+          properties: {
+            field_0: {
+              type: 'string',
+              title: '名称',
+            },
+            field_1: {
+              type: 'string',
+              title: 'abc',
+            },
+          },
+        }}
+        onSchemaChange={(schema) => {
+          console.log(schema);
+        }}
+      />
+      <Button
+        onClick={() => {
+          ref.current?.updateSchema([1, 0], {
+            type: 'string',
+            title: '修改成功',
+          });
+        }}
+      >
+        按钮
+      </Button>
+    </>
+  );
+};
+```
+
 ## Notice
 
 组件中的 JSON 编辑器用的是加载 cdn 的方式，离线使用需添加 [monaco-editor](https://github.com/microsoft/monaco-editor)
