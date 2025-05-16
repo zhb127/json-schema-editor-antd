@@ -84,9 +84,10 @@ const ImportModal = (props: ImportModalProps) => {
             };
           }
 
-          const ajv = new Ajv({ strictSchema: true, allErrors: true });
-          if (!ajv.validateSchema(schema)) {
-            const errorContent = ajv.errors?.map((val, idx) => {
+          const ajv = new Ajv({ allErrors: true });
+          const validateSchema = ajv.getSchema('http://json-schema.org/draft-07/schema#');
+          if (validateSchema && !validateSchema(schema)) {
+            const errorContent = validateSchema.errors?.map((val, idx) => {
               let errMsg = `${val.message}`;
               if (val.params) {
                 errMsg += `; ${JSON.stringify(val.params)}`;
