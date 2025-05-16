@@ -13,7 +13,7 @@ import SchemaItem from './SchemaItem';
 import { SchemaEditorProps } from './types';
 
 export interface JsonSchemaEditorHandle {
-  updateSchema: (namePath: number[], value: any, propertyName?: string) => void;
+  updateSchema: (propPath: number[], value: any, keyword?: string) => void;
 }
 
 const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
