@@ -1,4 +1,3 @@
-import { useUpdateEffect } from 'ahooks';
 import { Empty } from 'antd';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import {
@@ -31,12 +30,6 @@ const JsonSchemaEditor = forwardRef<JsonSchemaEditorHandle, SchemaEditorProps>(
     // })
 
     const [schema, setSchema] = useState(initSchema(props.value));
-
-    useUpdateEffect(() => {
-      if (props.onSchemaChange !== undefined) {
-        props.onSchemaChange(schema);
-      }
-    }, [schema]);
 
     useImperativeHandle(ref, () => ({
       updateSchema: (namePath: number[], value: any, propertyName?: string) => {
