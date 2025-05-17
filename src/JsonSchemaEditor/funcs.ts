@@ -2,11 +2,12 @@ import _ from 'lodash';
 import { JSONSchema } from './types';
 import { getDefaultSchema, getValueByPath, inferSchema } from './utils';
 
+// 初始化 Schema
 export function initSchema(data: string | undefined | JSONSchema): JSONSchema {
   const defaultSchema: JSONSchema = {
     type: 'object',
     properties: {
-      prop_demo: { type: 'string' },
+      field_demo: { type: 'string' },
     },
   };
 
@@ -27,7 +28,7 @@ export function initSchema(data: string | undefined | JSONSchema): JSONSchema {
   }
 }
 
-// 更新 JSON Schema
+// 更新 Schema
 export function updateSchema(
   schema: JSONSchema,
   namePath: number[],
@@ -70,7 +71,7 @@ export function updateSchema(
 export function renameProperty(
   schema: JSONSchema,
   namePath: number[],
-  newPropName: string | number,
+  newPropName: string,
 ): JSONSchema | undefined {
   let schemaClone = _.cloneDeep(schema);
   let current: any = schemaClone;
@@ -96,6 +97,10 @@ export function renameProperty(
 
   const oldPropNameIndex = namePath[namePath.length - 1];
   const propNames = Object.keys(current);
+  if (propNames.indexOf(newPropName) > -1) {
+    return;
+  }
+
   const oldPropName = propNames[oldPropNameIndex];
   if (oldPropName === newPropName) {
     return;
@@ -165,7 +170,7 @@ export function updateRequiredProperty(
 
   const parentObject = getValueByPath(schemaClone, parentPath);
   if (!parentObject || !parentObject.properties) {
-    console.error('无法找到必选属性的父对象', parentObject);
+    console.error('无法找到必选属性的父级', parentObject);
     return;
   }
 
@@ -183,7 +188,10 @@ export function updateRequiredProperty(
 }
 
 // 移除属性
-export function removeProperty(schema: JSONSchema, namePath: number[]): JSONSchema | undefined {
+export function removeProperty(
+  schema: JSONSchema,
+  namePath: number[],
+): JSONSchema | undefined {
   let schemaClone = _.cloneDeep(schema);
 
   let current: any = schemaClone;
@@ -203,7 +211,11 @@ export function removeProperty(schema: JSONSchema, namePath: number[]): JSONSche
 
   updateRequired(pre, finalPropName, true);
 
-  if (current && typeof current === 'object' && current.hasOwnProperty(finalPropName)) {
+  if (
+    current &&
+    typeof current === 'object' &&
+    current.hasOwnProperty(finalPropName)
+  ) {
     delete current[finalPropName];
   }
 
@@ -211,7 +223,11 @@ export function removeProperty(schema: JSONSchema, namePath: number[]): JSONSche
 }
 
 // 添加属性
-export function addProperty(schema: JSONSchema, namePath: number[], isAddingChild: boolean): JSONSchema {
+export function addProperty(
+  schema: JSONSchema,
+  namePath: number[],
+  isAddingChild: boolean,
+): JSONSchema {
   let schemaClone = _.cloneDeep(schema);
 
   let current: any = schemaClone;
@@ -228,7 +244,7 @@ export function addProperty(schema: JSONSchema, namePath: number[], isAddingChil
   }
 
   const genNewPropName = (): string => {
-    return 'prop_' + Math.random().toString(36).slice(2, 6);
+    return 'field_' + Math.random().toString(36).slice(2, 6);
   };
 
   let newPropName = genNewPropName();

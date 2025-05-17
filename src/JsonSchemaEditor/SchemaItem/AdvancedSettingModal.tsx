@@ -13,9 +13,9 @@ import {
 } from 'antd';
 import _ from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { SchemaTypes, StringFormat } from '../consts';
 import { useI18n } from '../i18n';
 import MonacoEditor from '../MonacoEditor';
-import { SchemaTypes, StringFormat } from '../utils';
 
 interface AdvancedSettingModalProps {
   schema: any;

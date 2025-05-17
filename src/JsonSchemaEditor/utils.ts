@@ -162,15 +162,6 @@ export function parseJsonStr(str: any) {
   return undefined;
 }
 
-export const SchemaTypes = [
-  'string',
-  'number',
-  'array',
-  'object',
-  'boolean',
-  'integer',
-];
-
 export function getPropertyIndex(obj: any, propName: string): number {
   if (obj === null || typeof obj !== 'object') {
     console.error('The provided value is not an object.');
@@ -189,28 +180,11 @@ export function getValueByPath(obj: any, path: number[]): any {
     const key = Object.keys(current)[path[i]];
     if (key === undefined) {
       return undefined;
-    } else {
-      current = current[key];
     }
+    current = current[key];
   }
   return current;
 }
-
-export const StringFormat = [
-  { value: 'date-time' },
-  { value: 'date' },
-  { value: 'time' },
-  { value: 'email' },
-  { value: 'hostname' },
-  { value: 'ipv4' },
-  { value: 'ipv6' },
-  { value: 'uri' },
-  { value: 'regex' },
-];
-
-export const SchemaTypeOptions = SchemaTypes.map((value) => {
-  return { value: value };
-});
 
 export function getDefaultSchema(
   type: JSONSchemaTypeName | JSONSchemaTypeName[],
